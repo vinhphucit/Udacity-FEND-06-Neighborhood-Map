@@ -1,6 +1,7 @@
 import React from 'react';
 import LocationRow from './LocationRow';
 
+//List of location on Side Menu
 class LocationList extends React.Component {
     render() {
         const { locations, selectFavourite } = this.props;

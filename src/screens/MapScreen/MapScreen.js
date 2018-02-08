@@ -1,6 +1,8 @@
 import React from 'react'
 import SideMenuLocation from './components/SideMenuLocation'
 import * as FoursquareApi from './../../services/FoursquareApi'
+
+//This is the main screen 
 class MapScreen extends React.Component {
     state = {
         locations: []
@@ -26,6 +28,8 @@ class MapScreen extends React.Component {
         loadJS('https://maps.googleapis.com/maps/api/js?key=AIzaSyA7_2mjv6BUTJSpU_tW4RTRbbLKAmpUZwE&callback=initMap')
 
     }
+
+    //initialize map
     initMap() {
         var self = this;
         var mapview = document.getElementById('map-canvas');
@@ -50,6 +54,8 @@ class MapScreen extends React.Component {
 
         this.map.fitBounds(bounds);
     };
+
+    //show Info Window with data from FourSquareAPI
     populateInfoWindow(marker, infowindow) {
         if (infowindow.marker != marker) {
             this.map.panTo(new window.google.maps.LatLng(marker.position.lat(), marker.position.lng()));
@@ -64,6 +70,8 @@ class MapScreen extends React.Component {
                 infowindow.marker = null;
             });
         }
+
+        //Using Fetch to get data about the location
         FoursquareApi.requestFoursqureApi(marker.position.lat(), marker.position.lng()).then((response) => {
             console.log(response);
             if (response.response.venues.length > 0) {
@@ -87,11 +95,15 @@ class MapScreen extends React.Component {
             infowindow.close();
         });;
     }
+
+    //Using JS's Filter to filter the list of locations
     onSearchLocation(query) {
         this.setState({
             locations: this.locations.filter(location => location.name.toLowerCase().indexOf(query.toLowerCase().trim()) >= 0)
         })
     }
+
+    //create marker on map
     createMarker(fav) {
         var self = this;
         var marker = new window.google.maps.Marker({
@@ -116,6 +128,7 @@ class MapScreen extends React.Component {
         return marker;
     };
 
+    //Customize the Marker icon
     makeMarkerIcon(defaultIcon) {
         console.log("create marker" + defaultIcon)
         var markerNoSale = require('./../../icons/marker.png');
@@ -125,6 +138,8 @@ class MapScreen extends React.Component {
         else
             return new window.google.maps.MarkerImage(markerSale);
     };
+
+    //Choosing location from side menu will automatically show Info Window on map
     selectFavourite(data) {
         console.log(data)
         this.populateInfoWindow(data.marker, this.foursquareInfoWindow);
