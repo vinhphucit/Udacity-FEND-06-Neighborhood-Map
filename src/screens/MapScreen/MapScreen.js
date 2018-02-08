@@ -92,14 +92,24 @@ class MapScreen extends React.Component {
             }
 
         }).catch(function (err) {
-            infowindow.close();
+            infowindow.setContent('<div><strong>Can Not Load Data</strong></div>');
         });;
     }
 
     //Using JS's Filter to filter the list of locations
     onSearchLocation(query) {
+        var self = this;
         this.setState({
-            locations: this.locations.filter(location => location.name.toLowerCase().indexOf(query.toLowerCase().trim()) >= 0)
+            locations: this.locations.filter(location => {
+                if (location.marker) {
+                    if (location.name.toLowerCase().indexOf(query.toLowerCase().trim()) >= 0) {
+                        location.marker.setMap(self.map);
+                    } else {
+                        location.marker.setMap(null);
+                    }
+                }
+                return location.name.toLowerCase().indexOf(query.toLowerCase().trim()) >= 0;
+            })
         })
     }
 
